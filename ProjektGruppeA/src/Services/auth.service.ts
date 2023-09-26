@@ -8,6 +8,7 @@ class AuthService {
     private service = new ApiService('Auth');
     
     async authorize(username: string, password: string){
+        debugger //eslint-disable-line
         const response: AuthResponse = await this.service.post('/token', { Username: username, Password: password});
         const { token } = response
         this.saveToken(token);

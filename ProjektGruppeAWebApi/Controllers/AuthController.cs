@@ -3,6 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using ProjektGruppeAWebApi.Models;
 
 namespace ProjektGruppeAWebApi.Controllers
 {
@@ -11,9 +12,9 @@ namespace ProjektGruppeAWebApi.Controllers
     public class AuthController : ControllerBase
     {
         [HttpPost("token")]
-        public IActionResult GetToken([FromBody] LoginModel model)
+        public IActionResult GetToken([FromBody] UserLogin user)
         {
-            if (IsValidUser(model.Username, model.Password))
+            if (IsValidUser(user.Username, user.Password))
             {
                 var key = Encoding.ASCII.GetBytes("IhrGeheimerSchlüsselHier");
                 var tokenHandler = new JwtSecurityTokenHandler();
@@ -21,7 +22,7 @@ namespace ProjektGruppeAWebApi.Controllers
                 {
                     Subject = new ClaimsIdentity(new Claim[]
                     {
-                    new Claim(ClaimTypes.Name, model.Username),
+                    new Claim(ClaimTypes.Name, user.Username),
                     new Claim(ClaimTypes.Role, "Admin"),
                     }),
                     Expires = DateTime.UtcNow.AddHours(1),
@@ -41,11 +42,5 @@ namespace ProjektGruppeAWebApi.Controllers
         {
             return username == "testUser" && password == "testUser";
         }
-    }
-
-    public class LoginModel
-    {
-        public string Username { get; set; }
-        public string Password { get; set; }
     }
 }
